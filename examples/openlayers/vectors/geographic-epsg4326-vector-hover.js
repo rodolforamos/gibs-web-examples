@@ -4,7 +4,7 @@ window.onload = function () {
     image: new ol.style.Circle({
       radius: 5,
       fill: new ol.style.Fill({
-        color: 'rgb(236, 98, 16)'
+        color: '#FC0'
       })
     })
   });
@@ -31,7 +31,8 @@ window.onload = function () {
     style: circleStyle,
     source: new ol.source.VectorTile({
       visible: true,
-      url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=2020-09-18T00:00:00Z&layer=VIIRS_NOAA20_Thermal_Anomalies_375m_All&tilematrixset=500m&Service=WMTS&Request=GetTile&Version=1.0.0&FORMAT=application%2Fvnd.mapbox-vector-tile&TileMatrix={z}&TileCol={x}&TileRow={y}',
+      // url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?TIME=2020-09-18T00:00:00Z&layer=VIIRS_NOAA20_Thermal_Anomalies_375m_All&tilematrixset=500m&Service=WMTS&Request=GetTile&Version=1.0.0&FORMAT=application%2Fvnd.mapbox-vector-tile&TileMatrix={z}&TileCol={x}&TileRow={y}',
+      url: 'https://gibs-{a-c}.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=GetTile&Version=1.0.0&TIME=2022-08-20&layer=VIIRS_NOAA20_Thermal_Anomalies_375m_All&tilematrixset=500m&TileMatrix={z}&TileCol={x}&TileRow={y}&FORMAT=application/vnd.mapbox-vector-tile',
       format: new ol.format.MVT(),
       matrixSet: '500m',
       projection: ol.proj.get('EPSG:4326'),
@@ -43,17 +44,19 @@ window.onload = function () {
     })
   });
   var map = new ol.Map({
-    layers: [base, vectorLayer],
+    layers: [base, vectorLayer], //
     target: 'map',
     view: new ol.View({
-      center: [0, 0],
-      maxZoom: 8,
-      zoom: 1,
+      center: [-53.20986, -14.26946],
+      maxZoom: 21,
+      zoom: 18,
       extent: [-180, -90, 180, 90],
       projection: ol.proj.get('EPSG:4326')
     })
   });
+
   var info = document.getElementById('info');
+
   var displayFeatureInfo = function (event) {
     var features = map.getFeaturesAtPixel(event.pixel);
     if (features.length === 0) {
@@ -62,8 +65,11 @@ window.onload = function () {
       return;
     }
     var properties = features[0].getProperties();
-    info.innerText = JSON.stringify(properties, null, 2);
+    var presentText = JSON.stringify(properties, null, 2);
+    info.innerText = presentText;
     info.style.opacity = 1;
+    console.log(presentText);
   };
+
   map.on('pointermove', displayFeatureInfo);
 };

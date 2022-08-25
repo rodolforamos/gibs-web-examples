@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Add a third party vector tile source</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.10.0/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+        // TO MAKE THE MAP APPEAR YOU MUST
+        // ADD YOUR ACCESS TOKEN FROM
+        // https://account.mapbox.com
+        mapboxgl.accessToken =     "pk.eyJ1IjoiYW51YnoiLCJhIjoiY2t6NG5vdm00MGlqcTJvbng3bjhqZnRuMiJ9.sjPB8w38on_djZ8XvRp_aA";
+
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/satellite-v9',
+            zoom: 4,
+            center: [-53.20986, -14.26946],
+            projection: {
+                name: 'equirectangular',
+                center: [0, 30],
+                parallels: [30, 30]
+            }
+        });
+
+        // map.setProjection({
+        //     name: 'equirectangular',
+        //     center: [-90, 0],
+        //     parallels: [90, 90]
+        // });
+
+        map.on('load', () => {
+
+            // map.addSource('nasagibs', {
+            //     'type': 'vector',
+            //     'tiles': [
+            //     //  'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_NOAA20_Thermal_Anomalies_375m_All/default/2022-08-20/500m/{z}/{x}/{y}.png'
+            //     //  'https://gibs-c.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=GetTile&Version=1.0.0&TIME=2022-08-20&layer=VIIRS_NOAA20_Thermal_Anomalies_375m_All&tilematrixset=500m&TileMatrix={z}&TileCol={x}&TileRow={y}&FORMAT=application/vnd.mapbox-vector-tile'
+            //     //  'https://gibs-c.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=GetTile&Version=1.0.0&TIME=2022-08-20&layer=VIIRS_NOAA20_Thermal_Anomalies_375m_All&tilematrixset=500m&TileMatrix=7&TileCol=56&TileRow=46&FORMAT=application/vnd.mapbox-vector-tile'
+            //      'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/wmts.cgi?Service=WMTS&Request=GetTile&Version=1.0.0&TIME=2022-08-20&layer=VIIRS_NOAA20_Thermal_Anomalies_375m_All&tilematrixset=500m&TileMatrix=4&TileCol=4&TileRow=3&FORMAT=application/vnd.mapbox-vector-tile'
+
+            //     ]
+            // });
+            // map.addLayer(
+            // {
+            //     'id': 'fires', // Layer ID
+            //     'source': 'nasagibs', // ID of the tile source created above
+            //     'source-layer': 'VIIRS_NOAA20_Thermal_Anomalies_375m_All_v2_NRT',
+            //     'type': 'circle',
+            //     'paint': {
+            //         "circle-radius": 3,
+            //         "circle-color": "#fc0",
+            //     }
+            // });
+
+
+            map.addSource('VIIRS_NOAA20_Thermal_Anomalies_375m_All', {
+                "type": "vector",
+                "tiles": [
+                    "https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/VIIRS_NOAA20_Thermal_Anomalies_375m_All/default/2022-08-20/500m/{z}/{y}/{x}.mvt"
+                ]
+            });
+            map.addLayer(
+            {
+                "id": "VIIRS_NOAA20_Thermal_Anomalies_375m_All_v2_NRT",
+                "source": "VIIRS_NOAA20_Thermal_Anomalies_375m_All",
+                "source-layer": "VIIRS_NOAA20_Thermal_Anomalies_375m_All_v2_NRT",
+
+                "type": "circle",
+                "paint": {
+                    "circle-radius": [
+                    "step",
+                    [
+                        "zoom"
+                    ],
+                    1,
+                    1,
+                    2,
+                    3,
+                    3
+                    ],
+                    "circle-color": "rgb(240, 40, 40)"
+                },
+                // "circle-pitch-alignment": "viewport",
+                // "circle-translate": [0, -10],
+                // "circle-translate-anchor": "viewport",
+            });
+
+
+            // // Add a new vector tile source with ID 'mapillary'.
+            // map.addSource('mapillary', {
+                //     'type': 'vector',
+                //     'tiles': [
+            //       'https://tiles.mapillary.com/maps/vtp/mly1_public/2/{z}/{x}/{y}?access_token=MLY|4142433049200173|72206abe5035850d6743b23a49c41333'
+            //     ],
+            //     'minzoom': 6,
+            //     'maxzoom': 14
+            // });
+
+            // map.addLayer(
+            // {
+            //     'id': 'mapillary', // Layer ID
+            //     'type': 'line',
+            //     'source': 'mapillary', // ID of the tile source created above
+            //     // Source has several layers. We visualize the one with name 'sequence'.
+            //     'source-layer': 'sequence',
+            //     'layout': {
+            //         'line-cap': 'round',
+            //         'line-join': 'round'
+            //     },
+            //     'paint': {
+            //         'line-opacity': 0.6,
+            //         'line-color': 'rgb(53, 175, 109)',
+            //         'line-width': 2
+            //     }
+            // });
+
+        });
+
+        map.addControl(new mapboxgl.NavigationControl());
+    </script>
+
+</body>
+</html>

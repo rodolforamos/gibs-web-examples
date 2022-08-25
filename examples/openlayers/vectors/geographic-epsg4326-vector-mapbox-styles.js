@@ -86,6 +86,7 @@ window.onload = function () {
       projection: ol.proj.get('EPSG:4326')
     })
   });
+
   const vectorLayer = new ol.layer.VectorTile({
     renderMode: 'image',
     source: new ol.source.VectorTile({
